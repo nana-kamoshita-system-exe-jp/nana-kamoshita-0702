@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>今日の運勢 - Next.js Preview</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .current-date {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .fortune-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+
+        .fortune-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .fortune-section:nth-child(2) { animation-delay: 0.1s; }
+        .fortune-section:nth-child(3) { animation-delay: 0.2s; }
+        .fortune-section:nth-child(4) { animation-delay: 0.3s; }
+        .fortune-section:nth-child(5) { animation-delay: 0.4s; }
+
+        .fortune-section h2 {
+            color: #4a5568;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+
+        .stars {
+            margin-bottom: 10px;
+        }
+
+        .star {
+            color: #ffd700;
+            font-size: 1.5rem;
+            margin-right: 3px;
+        }
+
+        .star.empty {
+            color: #ddd;
+        }
+
+        .fortune-section p {
+            line-height: 1.6;
+            color: #2d3748;
+            font-size: 1rem;
+        }
+
+        .lucky-items {
+            display: flex;
+            justify-content: space-around;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .lucky-item {
+            text-align: center;
+            margin: 10px;
+        }
+
+        .lucky-item h3 {
+            color: #4a5568;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .color-display {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            border: 3px solid #fff;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .number-display {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .lucky-color-name {
+            font-weight: bold;
+            color: #4a5568;
+        }
+
+        .advice-section {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .advice-section h2 {
+            color: #8b4513;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .advice-section p {
+            color: #8b4513;
+            font-size: 1.1rem;
+            font-weight: 500;
+            line-height: 1.6;
+        }
+
+        .refresh-btn {
+            display: block;
+            margin: 0 auto;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .refresh-btn:active {
+            transform: translateY(0);
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            margin-top: 30px;
+            opacity: 0.8;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            header h1 {
+                font-size: 2rem;
+            }
+            
+            .fortune-card {
+                padding: 20px;
+            }
+            
+            .lucky-items {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .color-display,
+            .number-display {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .number-display {
+                font-size: 1.5rem;
+            }
+        }
+
+        .nextjs-badge {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #000;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔮 今日の運勢 🔮</h1>
+            <p class="current-date" id="currentDate"></p>
+        </header>
+
+        <main>
+            <div class="fortune-card">
+                <div class="fortune-section">
+                    <h2>総合運</h2>
+                    <div class="stars" id="overallStars"></div>
+                    <p id="overallText"></p>
+                </div>
+
+                <div class="fortune-section">
+                    <h2>恋愛運</h2>
+                    <div class="stars" id="loveStars"></div>
+                    <p id="loveText"></p>
+                </div>
+
+                <div class="fortune-section">
+                    <h2>仕事運</h2>
+                    <div class="stars" id="workStars"></div>
+                    <p id="workText"></p>
+                </div>
+
+                <div class="fortune-section">
+                    <h2>金運</h2>
+                    <div class="stars" id="moneyStars"></div>
+                    <p id="moneyText"></p>
+                </div>
+
+                <div class="lucky-items">
+                    <div class="lucky-item">
+                        <h3>ラッキーカラー</h3>
+                        <div class="color-display" id="luckyColor"></div>
+                        <p class="lucky-color-name" id="luckyColorName"></p>
+                    </div>
+                    
+                    <div class="lucky-item">
+                        <h3>ラッキーナンバー</h3>
+                        <div class="number-display" id="luckyNumber"></div>
+                    </div>
+                </div>
+
+                <div class="advice-section">
+                    <h2>今日のアドバイス</h2>
+                    <p id="dailyAdvice"></p>
+                </div>
+            </div>
+
+            <button class="refresh-btn" onclick="generateFortune(false)">
+                🎲 運勢を更新
+            </button>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 Daily Fortune. あなたの素敵な一日を応援します！</p>
+        </footer>
+    </div>
+
+    <div class="nextjs-badge">
+        ⚡ Powered by Next.js
+    </div>
+
+    <script>
+        // 運勢データ
+        const fortuneData = {
+            overall: [
+                "今日は素晴らしい一日になりそうです。新しいチャンスが舞い込んでくるかもしれません。",
+                "穏やかで安定した一日を過ごせるでしょう。リラックスして過ごすことが大切です。",
+                "少し注意が必要な日です。慎重に行動し、周りの人との関係を大切にしましょう。",
+                "エネルギーに満ち溢れた一日です。積極的に行動することで良い結果が得られるでしょう。",
+                "創造性が高まる日です。新しいアイデアや発想が浮かびやすいでしょう。",
+                "人との出会いに恵まれる日です。コミュニケーションを大切にしましょう。",
+                "内省的になりやすい日です。自分自身と向き合う時間を作ることが大切です。"
+            ],
+            love: [
+                "恋愛運は絶好調！素敵な出会いや進展が期待できます。",
+                "パートナーとの関係が深まる日です。思いやりを持って接しましょう。",
+                "少し慎重になった方が良い日です。相手の気持ちを考えて行動しましょう。",
+                "新しい恋の予感があります。積極的にコミュニケーションを取りましょう。",
+                "恋愛面では安定した日です。現在の関係を大切に育んでいきましょう。",
+                "ロマンチックな雰囲気に包まれる日です。特別な時間を過ごせるかもしれません。",
+                "友情から恋愛に発展する可能性があります。身近な人に注目してみて。"
+            ],
+            work: [
+                "仕事運は上昇中！重要なプロジェクトで成果を上げられるでしょう。",
+                "チームワークが重要な日です。同僚との協力を大切にしましょう。",
+                "集中力が高まる日です。難しい作業も効率よく進められるでしょう。",
+                "新しいアイデアが評価される日です。積極的に提案してみましょう。",
+                "上司や先輩からの評価が高まる日です。真面目な取り組みが認められるでしょう。",
+                "少し慎重に進めた方が良い日です。確認作業を怠らないようにしましょう。",
+                "学習意欲が高まる日です。新しいスキルを身につけるチャンスです。"
+            ],
+            money: [
+                "金運は好調です！思わぬ収入があるかもしれません。",
+                "節約を心がけると良い日です。無駄遣いを控えましょう。",
+                "投資や貯蓄について考える良い機会です。将来のために計画を立てましょう。",
+                "お金の管理を見直す日です。家計簿をつけてみると良いでしょう。",
+                "臨時収入の可能性があります。でも浮かれすぎないよう注意しましょう。",
+                "大きな買い物は避けた方が良い日です。よく考えてから決断しましょう。",
+                "金運は安定しています。堅実な選択を心がけましょう。"
+            ]
+        };
+
+        const luckyColors = [
+            { name: "赤", color: "#FF6B6B" },
+            { name: "青", color: "#4ECDC4" },
+            { name: "緑", color: "#45B7D1" },
+            { name: "黄色", color: "#FFA07A" },
+            { name: "紫", color: "#9B59B6" },
+            { name: "オレンジ", color: "#FF8C42" },
+            { name: "ピンク", color: "#FF69B4" },
+            { name: "水色", color: "#87CEEB" },
+            { name: "金色", color: "#FFD700" },
+            { name: "銀色", color: "#C0C0C0" }
+        ];
+
+        const dailyAdvice = [
+            "笑顔を忘れずに過ごしましょう。あなたの笑顔が周りの人を幸せにします。",
+            "感謝の気持ちを大切にしましょう。小さなことにも「ありがとう」を言ってみて。",
+            "新しいことにチャレンジしてみましょう。成長のチャンスが待っています。",
+            "深呼吸をして、リラックスする時間を作りましょう。心の平穏が大切です。",
+            "家族や友人との時間を大切にしましょう。人とのつながりが幸せを運んでくれます。",
+            "自分を信じて行動しましょう。あなたには素晴らしい可能性があります。",
+            "今日一日を大切に過ごしましょう。毎日が特別な贈り物です。",
+            "優しさを心がけましょう。小さな親切が大きな幸せを生み出します。",
+            "健康に気を配りましょう。体調管理が全ての基本です。",
+            "前向きな気持ちを持ちましょう。ポジティブな思考が良い結果を引き寄せます。"
+        ];
+
+        // 日付を表示
+        function displayCurrentDate() {
+            const today = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+            const dateString = today.toLocaleDateString('ja-JP', options);
+            document.getElementById('currentDate').textContent = dateString;
+        }
+
+        // 星を表示
+        function displayStars(elementId, rating) {
+            const starsHtml = Array.from({length: 5}, (_, i) => 
+                `<span class="star ${i < rating ? '' : 'empty'}">★</span>`
+            ).join('');
+            document.getElementById(elementId).innerHTML = starsHtml;
+        }
+
+        // シード付き乱数生成器
+        function seededRandom(seed) {
+            const x = Math.sin(seed) * 10000;
+            return x - Math.floor(x);
+        }
+
+        // 運勢を生成
+        function generateFortune(useToday = true) {
+            let seed;
+            
+            if (useToday) {
+                const today = new Date();
+                seed = today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
+            } else {
+                seed = Math.random() * 100000;
+            }
+            
+            // 各運勢の星の数を決定（1-5）
+            const overallRating = Math.floor(seededRandom(seed) * 5) + 1;
+            const loveRating = Math.floor(seededRandom(seed + 1) * 5) + 1;
+            const workRating = Math.floor(seededRandom(seed + 2) * 5) + 1;
+            const moneyRating = Math.floor(seededRandom(seed + 3) * 5) + 1;
+            
+            // 運勢テキストを選択
+            const overallIndex = Math.floor(seededRandom(seed + 4) * fortuneData.overall.length);
+            const loveIndex = Math.floor(seededRandom(seed + 5) * fortuneData.love.length);
+            const workIndex = Math.floor(seededRandom(seed + 6) * fortuneData.work.length);
+            const moneyIndex = Math.floor(seededRandom(seed + 7) * fortuneData.money.length);
+            
+            // ラッキーカラーとナンバーを選択
+            const luckyColorIndex = Math.floor(seededRandom(seed + 8) * luckyColors.length);
+            const luckyNumber = Math.floor(seededRandom(seed + 9) * 99) + 1;
+            
+            // アドバイスを選択
+            const adviceIndex = Math.floor(seededRandom(seed + 10) * dailyAdvice.length);
+            
+            // 表示を更新
+            displayStars('overallStars', overallRating);
+            displayStars('loveStars', loveRating);
+            displayStars('workStars', workRating);
+            displayStars('moneyStars', moneyRating);
+            
+            document.getElementById('overallText').textContent = fortuneData.overall[overallIndex];
+            document.getElementById('loveText').textContent = fortuneData.love[loveIndex];
+            document.getElementById('workText').textContent = fortuneData.work[workIndex];
+            document.getElementById('moneyText').textContent = fortuneData.money[moneyIndex];
+            
+            document.getElementById('luckyColor').style.backgroundColor = luckyColors[luckyColorIndex].color;
+            document.getElementById('luckyColorName').textContent = luckyColors[luckyColorIndex].name;
+            document.getElementById('luckyNumber').textContent = luckyNumber;
+            
+            document.getElementById('dailyAdvice').textContent = dailyAdvice[adviceIndex];
+        }
+
+        // 初期化
+        displayCurrentDate();
+        generateFortune();
+    </script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>今日の運勢 - Daily Fortune</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔮 今日の運勢 🔮</h1>
+            <p id="current-date"></p>
+        </header>
+
+        <main>
+            <div class="fortune-card">
+                <div class="fortune-section">
+                    <h2>総合運</h2>
+                    <div class="stars" id="overall-stars"></div>
+                    <p id="overall-fortune"></p>
+                </div>
+
+                <div class="fortune-section">
+                    <h2>恋愛運</h2>
+                    <div class="stars" id="love-stars"></div>
+                    <p id="love-fortune"></p>
+                </div>
+
+                <div class="fortune-section">
+                    <h2>仕事運</h2>
+                    <div class="stars" id="work-stars"></div>
+                    <p id="work-fortune"></p>
+                </div>
+
+                <div class="fortune-section">
+                    <h2>金運</h2>
+                    <div class="stars" id="money-stars"></div>
+                    <p id="money-fortune"></p>
+                </div>
+
+                <div class="lucky-items">
+                    <div class="lucky-item">
+                        <h3>ラッキーカラー</h3>
+                        <div id="lucky-color" class="color-display"></div>
+                        <p id="lucky-color-name"></p>
+                    </div>
+                    
+                    <div class="lucky-item">
+                        <h3>ラッキーナンバー</h3>
+                        <div id="lucky-number" class="number-display"></div>
+                    </div>
+                </div>
+
+                <div class="advice-section">
+                    <h2>今日のアドバイス</h2>
+                    <p id="daily-advice"></p>
+                </div>
+            </div>
+
+            <button id="refresh-fortune" class="refresh-btn">
+                🎲 運勢を更新
+            </button>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 Daily Fortune. あなたの素敵な一日を応援します！</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
